@@ -8,15 +8,20 @@ import { categories, recipes, recipeSources } from "@/src/db/schema";
 import { clearAuthCookie } from "@/src/lib/auth";
 import { categorySchema, recipeSchema } from "@/src/lib/validation";
 
-export async function logoutAction() {
+function withError(path: string, message: string): never {
+  redirect(`${path}?error=${encodeURIComponent(message)}`);
+  throw new Error("Unreachable after redirect");
+}
+
+export async function logoutAction(): Promise<void> {
   await clearAuthCookie();
   redirect("/login");
 }
 
-export async function createCategoryAction(formData: FormData) {
+export async function createCategoryAction(formData: FormData): Promise<void> {
   const parsed = categorySchema.safeParse({ name: formData.get("name") });
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid category" };
+    withError("/", parsed.error.issues[0]?.message ?? "Invalid category");
   }
 
   const now = new Date();
@@ -28,25 +33,28 @@ export async function createCategoryAction(formData: FormData) {
   });
 
   revalidatePath("/");
-  return { success: true };
 }
 
-export async function renameCategoryAction(formData: FormData) {
+export async function renameCategoryAction(formData: FormData): Promise<void> {
   const id = String(formData.get("id") ?? "");
   const parsed = categorySchema.safeParse({ name: formData.get("name") });
-  if (!id || !parsed.success) {
-    return { error: "Invalid category" };
+  if (!id) {
+    withError("/", "Invalid category");
+  }
+  if (!parsed.success) {
+    withError(`/categories/${id}`, parsed.error.issues[0]?.message ?? "Invalid category");
   }
 
   await db.update(categories).set({ name: parsed.data.name, updatedAt: new Date() }).where(eq(categories.id, id));
   revalidatePath("/");
   revalidatePath(`/categories/${id}`);
-  return { success: true };
 }
 
-export async function deleteCategoryAction(formData: FormData) {
+export async function deleteCategoryAction(formData: FormData): Promise<void> {
   const id = String(formData.get("id") ?? "");
-  if (!id) return { error: "Missing id" };
+  if (!id) {
+    withError("/", "Missing id");
+  }
   await db.delete(categories).where(eq(categories.id, id));
   revalidatePath("/");
   redirect("/");
@@ -71,9 +79,11 @@ function parseRecipePayload(formData: FormData) {
   });
 }
 
-export async function createRecipeAction(formData: FormData) {
+export async function createRecipeAction(formData: FormData): Promise<void> {
   const parsed = parseRecipePayload(formData);
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Invalid recipe" };
+  if (!parsed.success) {
+    withError("/recipes/new", parsed.error.issues[0]?.message ?? "Invalid recipe");
+  }
   const now = new Date();
   const id = crypto.randomUUID();
 
@@ -105,12 +115,16 @@ export async function createRecipeAction(formData: FormData) {
   redirect(`/recipes/${id}`);
 }
 
-export async function updateRecipeAction(formData: FormData) {
+export async function updateRecipeAction(formData: FormData): Promise<void> {
   const id = String(formData.get("id") ?? "");
-  if (!id) return { error: "Missing recipe id" };
+  if (!id) {
+    withError("/", "Missing recipe id");
+  }
 
   const parsed = parseRecipePayload(formData);
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Invalid recipe" };
+  if (!parsed.success) {
+    withError(`/recipes/${id}/edit`, parsed.error.issues[0]?.message ?? "Invalid recipe");
+  }
 
   const now = new Date();
   await db.transaction(async (tx) => {
@@ -141,21 +155,24 @@ export async function updateRecipeAction(formData: FormData) {
   redirect(`/recipes/${id}`);
 }
 
-export async function deleteRecipeAction(formData: FormData) {
+export async function deleteRecipeAction(formData: FormData): Promise<void> {
   const id = String(formData.get("id") ?? "");
   const categoryId = String(formData.get("categoryId") ?? "");
-  if (!id) return { error: "Missing recipe id" };
+  if (!id) {
+    withError("/", "Missing recipe id");
+  }
   await db.delete(recipes).where(eq(recipes.id, id));
   revalidatePath("/");
   if (categoryId) revalidatePath(`/categories/${categoryId}`);
   redirect("/");
 }
 
-export async function cookedTodayAction(formData: FormData) {
+export async function cookedTodayAction(formData: FormData): Promise<void> {
   const id = String(formData.get("id") ?? "");
-  if (!id) return { error: "Missing recipe id" };
+  if (!id) {
+    withError("/", "Missing recipe id");
+  }
   await db.update(recipes).set({ lastCookedAt: new Date(), updatedAt: new Date() }).where(eq(recipes.id, id));
   revalidatePath(`/recipes/${id}`);
   revalidatePath("/");
 }
-

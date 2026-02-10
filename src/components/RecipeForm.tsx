@@ -15,21 +15,17 @@ type Props = {
     rating?: number | null;
     sources: Source[];
   };
-  action: (formData: FormData) => Promise<{ error?: string } | void>;
+  action: (formData: FormData) => Promise<void>;
 };
 
 export function RecipeForm({ categories, defaultValues, action }: Props) {
   const [sources, setSources] = useState<Source[]>(defaultValues?.sources?.length ? defaultValues.sources : [{ url: "", notes: "" }]);
-  const [error, setError] = useState<string | null>(null);
 
   return (
     <form
       action={async (formData) => {
         formData.set("sources", JSON.stringify(sources));
-        const result = await action(formData);
-        if (result && "error" in result && result.error) {
-          setError(result.error);
-        }
+        await action(formData);
       }}
       className="space-y-4"
     >
@@ -84,7 +80,6 @@ export function RecipeForm({ categories, defaultValues, action }: Props) {
         ))}
       </div>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
       <button className="bg-slate-900 text-white">Save dish</button>
     </form>
   );

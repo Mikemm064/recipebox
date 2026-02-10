@@ -5,8 +5,15 @@ import { ConfirmButton } from "@/src/components/ConfirmButton";
 import { deleteCategoryAction, renameCategoryAction } from "@/src/lib/actions";
 import { getCategoryWithRecipes } from "@/src/lib/data";
 
-export default async function CategoryPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function CategoryPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ error?: string }>;
+}) {
   const { id } = await params;
+  const { error } = await searchParams;
   const data = await getCategoryWithRecipes(id);
   if (!data) notFound();
 
@@ -16,6 +23,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
         <h1 className="text-2xl font-semibold">{data.category.name}</h1>
         <Link href={`/recipes/new?categoryId=${data.category.id}`} className="rounded-md bg-slate-900 px-3 py-2 text-white">Add Dish</Link>
       </div>
+
+      {error && <p className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</p>}
 
       <div className="flex flex-wrap gap-2 rounded-md border border-slate-200 bg-white p-3">
         <form action={renameCategoryAction} className="flex gap-2">
