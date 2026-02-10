@@ -1,4 +1,4 @@
-import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
+import { sqliteTable } from "drizzle-orm/sqlite-core";
 
 // --------------------
 // categories
