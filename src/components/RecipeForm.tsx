@@ -1,0 +1,91 @@
+"use client";
+
+import { useState } from "react";
+
+type Category = { id: string; name: string };
+type Source = { url: string; notes?: string | null };
+
+type Props = {
+  categories: Category[];
+  defaultValues?: {
+    id?: string;
+    categoryId: string;
+    title: string;
+    notes?: string | null;
+    rating?: number | null;
+    sources: Source[];
+  };
+  action: (formData: FormData) => Promise<{ error?: string } | void>;
+};
+
+export function RecipeForm({ categories, defaultValues, action }: Props) {
+  const [sources, setSources] = useState<Source[]>(defaultValues?.sources?.length ? defaultValues.sources : [{ url: "", notes: "" }]);
+  const [error, setError] = useState<string | null>(null);
+
+  return (
+    <form
+      action={async (formData) => {
+        formData.set("sources", JSON.stringify(sources));
+        const result = await action(formData);
+        if (result && "error" in result && result.error) {
+          setError(result.error);
+        }
+      }}
+      className="space-y-4"
+    >
+      {defaultValues?.id && <input type="hidden" name="id" value={defaultValues.id} />}
+      <div>
+        <label className="mb-1 block text-sm font-medium">Category</label>
+        <select name="categoryId" defaultValue={defaultValues?.categoryId ?? ""} className="w-full" required>
+          <option value="" disabled>Select a category</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>{category.name}</option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label className="mb-1 block text-sm font-medium">Title</label>
+        <input name="title" className="w-full" defaultValue={defaultValues?.title ?? ""} required />
+      </div>
+
+      <div>
+        <label className="mb-1 block text-sm font-medium">Notes</label>
+        <textarea name="notes" className="w-full" rows={4} defaultValue={defaultValues?.notes ?? ""} />
+      </div>
+
+      <div>
+        <label className="mb-1 block text-sm font-medium">Rating (1-5)</label>
+        <input name="rating" type="number" min={1} max={5} className="w-24" defaultValue={defaultValues?.rating ?? ""} />
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <h3 className="font-medium">Source links</h3>
+          <button type="button" className="bg-slate-200" onClick={() => setSources((prev) => [...prev, { url: "", notes: "" }])}>Add source</button>
+        </div>
+        {sources.map((source, index) => (
+          <div key={index} className="grid gap-2 rounded-md border border-slate-200 p-3 md:grid-cols-[1fr_auto]">
+            <div className="space-y-2">
+              <input
+                placeholder="https://..."
+                value={source.url}
+                onChange={(event) => setSources((prev) => prev.map((item, i) => i === index ? { ...item, url: event.target.value } : item))}
+                required
+              />
+              <input
+                placeholder="Link notes (optional)"
+                value={source.notes ?? ""}
+                onChange={(event) => setSources((prev) => prev.map((item, i) => i === index ? { ...item, notes: event.target.value } : item))}
+              />
+            </div>
+            <button type="button" className="bg-red-100 text-red-700" onClick={() => setSources((prev) => prev.filter((_, i) => i !== index))} disabled={sources.length === 1}>Remove</button>
+          </div>
+        ))}
+      </div>
+
+      {error && <p className="text-sm text-red-600">{error}</p>}
+      <button className="bg-slate-900 text-white">Save dish</button>
+    </form>
+  );
+}
