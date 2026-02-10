@@ -3,15 +3,20 @@
 import * as React from "react";
 
 export type ConfirmButtonProps = {
+  /** Back-compat: some call sites use `message` */
+  message?: string;
+  /** Preferred prop name */
   confirmMessage?: string;
-  onConfirm: () => void | Promise<void>;
+
+  onConfirm?: () => void | Promise<void>; // optional, since this is often used inside a <form>
   children: React.ReactNode;
   className?: string;
   disabled?: boolean;
 };
 
 export function ConfirmButton({
-  confirmMessage = "Are you sure?",
+  message,
+  confirmMessage,
   onConfirm,
   children,
   className,
@@ -19,18 +24,32 @@ export function ConfirmButton({
 }: ConfirmButtonProps) {
   const [isPending, startTransition] = React.useTransition();
 
-  const handleClick = React.useCallback(() => {
-    const ok = window.confirm(confirmMessage);
-    if (!ok) return;
+  const finalMessage = confirmMessage ?? message ?? "Are you sure?";
 
-    startTransition(() => {
-      void onConfirm();
-    });
-  }, [confirmMessage, onConfirm, startTransition]);
+  const handleClick = React.useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      const ok = window.confirm(finalMessage);
+      if (!ok) {
+        // If this button is inside a form, prevent submit
+        e.preventDefault();
+        return;
+      }
+
+      // If caller provided onConfirm, run it.
+      if (onConfirm) {
+        e.preventDefault();
+        startTransition(() => {
+          void onConfirm();
+        });
+      }
+      // Otherwise, allow the form submit to proceed normally.
+    },
+    [finalMessage, onConfirm, startTransition]
+  );
 
   return (
     <button
-      type="button"
+      type="submit"
       className={className}
       onClick={handleClick}
       disabled={Boolean(disabled) || isPending}
