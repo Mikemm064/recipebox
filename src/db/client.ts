@@ -3,20 +3,17 @@ import { drizzle, type LibSQLDatabase } from "drizzle-orm/libsql";
 import * as schema from "@/src/db/schema";
 
 function createDbClient(): Client {
-  const url = process.env.TURSO_DATABASE_URL;
-  const authToken = process.env.TURSO_AUTH_TOKEN;
-
-  if (!url) {
+  if (!process.env.TURSO_DATABASE_URL) {
     throw new Error("Missing TURSO_DATABASE_URL");
   }
 
-  if (!authToken) {
+  if (!process.env.TURSO_AUTH_TOKEN) {
     throw new Error("Missing TURSO_AUTH_TOKEN");
   }
 
   return createClient({
-    url,
-    authToken,
+    url: process.env.TURSO_DATABASE_URL,
+    authToken: process.env.TURSO_AUTH_TOKEN,
   });
 }
 
