@@ -12,7 +12,6 @@ type Props = {
     categoryId: string;
     title: string;
     notes?: string | null;
-    rating?: number | null;
     sources: Source[];
   };
   action: (formData: FormData) => Promise<void>;
@@ -48,11 +47,6 @@ export function RecipeForm({ categories, defaultValues, action }: Props) {
       <div>
         <label className="mb-1 block text-sm font-medium">Notes</label>
         <textarea name="notes" className="w-full" rows={4} defaultValue={defaultValues?.notes ?? ""} />
-      </div>
-
-      <div>
-        <label className="mb-1 block text-sm font-medium">Rating (1-5)</label>
-        <input name="rating" type="number" min={1} max={5} className="w-24" defaultValue={defaultValues?.rating ?? ""} />
       </div>
 
       <div className="space-y-2">

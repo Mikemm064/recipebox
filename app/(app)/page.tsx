@@ -4,6 +4,9 @@ import { db } from "@/src/db/client";
 import { categories, recipes } from "@/src/db/schema";
 import { getRecentRecipes } from "@/src/lib/data";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function HomePage() {
   const recent = await getRecentRecipes();
   const cats = await db

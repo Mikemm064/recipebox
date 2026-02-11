@@ -13,12 +13,10 @@ CREATE TABLE `recipes` (
   `category_id` text NOT NULL,
   `title` text NOT NULL,
   `notes` text,
-  `rating` integer,
   `last_cooked_at` integer,
   `created_at` integer NOT NULL,
   `updated_at` integer NOT NULL,
-  FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON UPDATE no action ON DELETE cascade,
-  CHECK (`rating` IS NULL OR (`rating` >= 1 AND `rating` <= 5))
+  FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
 CREATE TABLE `recipe_sources` (

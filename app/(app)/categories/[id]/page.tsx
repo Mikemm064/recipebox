@@ -5,6 +5,9 @@ import { ConfirmButton } from "@/src/components/ConfirmButton";
 import { deleteCategoryAction, renameCategoryAction } from "@/src/lib/actions";
 import { getCategoryWithRecipes } from "@/src/lib/data";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function CategoryPage({
   params,
   searchParams,

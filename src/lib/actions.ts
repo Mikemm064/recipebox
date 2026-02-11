@@ -74,7 +74,6 @@ function parseRecipePayload(formData: FormData) {
     categoryId: formData.get("categoryId"),
     title: formData.get("title"),
     notes: formData.get("notes"),
-    rating: formData.get("rating"),
     sources: parsedSources,
   });
 }
@@ -93,7 +92,6 @@ export async function createRecipeAction(formData: FormData): Promise<void> {
       categoryId: parsed.data.categoryId,
       title: parsed.data.title,
       notes: parsed.data.notes || null,
-      rating: typeof parsed.data.rating === "number" ? parsed.data.rating : null,
       createdAt: now,
       updatedAt: now,
     });
@@ -132,7 +130,6 @@ export async function updateRecipeAction(formData: FormData): Promise<void> {
       categoryId: parsed.data.categoryId,
       title: parsed.data.title,
       notes: parsed.data.notes || null,
-      rating: typeof parsed.data.rating === "number" ? parsed.data.rating : null,
       updatedAt: now,
     }).where(eq(recipes.id, id));
 

@@ -1,6 +1,6 @@
 import { count, desc, eq, sql } from "drizzle-orm";
 import { db } from "@/src/db/client";
-import { categories, recipes } from "@/src/db/schema";
+import { categories, recipes, recipeSources } from "@/src/db/schema";
 
 export async function globalSearch(query: string) {
   const normalized = query.trim();
@@ -53,10 +53,26 @@ export async function getCategoryWithRecipes(id: string) {
 }
 
 export async function getRecipe(id: string) {
-  return db.query.recipes.findFirst({
+  const recipe = await db.query.recipes.findFirst({
     where: eq(recipes.id, id),
-    with: { category: true, sources: true },
   });
+  if (!recipe) return null;
+
+  const [category] = await db.select({
+    id: categories.id,
+    name: categories.name,
+  }).from(categories).where(eq(categories.id, recipe.categoryId)).limit(1);
+
+  const sources = await db.query.recipeSources.findMany({
+    where: eq(recipeSources.recipeId, id),
+    orderBy: [desc(recipeSources.createdAt)],
+  });
+
+  return {
+    ...recipe,
+    category: category ?? { id: recipe.categoryId, name: "Unknown" },
+    sources,
+  };
 }
 
 export async function getAllCategories() {

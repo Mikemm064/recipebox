@@ -4,6 +4,9 @@ import { SearchBar } from "@/src/components/SearchBar";
 import { createCategoryAction, logoutAction } from "@/src/lib/actions";
 import { getSidebarCategories } from "@/src/lib/data";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const categories = await getSidebarCategories();
 
