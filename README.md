@@ -13,11 +13,7 @@ Create `.env.local` with:
 ```bash
 TURSO_DATABASE_URL=libsql://...
 TURSO_AUTH_TOKEN=...
-# Optional fallback if you accidentally named it differently:
-TURSO_DB_AUTH_TOKEN=...
 ```
-
-`TURSO_AUTH_TOKEN` is preferred when both token variables are present.
 
 ## Setup
 
@@ -46,8 +42,7 @@ TURSO_DB_AUTH_TOKEN=...
 2. Import project in Vercel.
 3. Add environment variables in Vercel project settings:
    - `TURSO_DATABASE_URL`
-   - `TURSO_AUTH_TOKEN` (preferred)
-   - `TURSO_DB_AUTH_TOKEN` (optional fallback)
+   - `TURSO_AUTH_TOKEN`
 4. Deploy.
 
 ### Initialize Turso (first time)
