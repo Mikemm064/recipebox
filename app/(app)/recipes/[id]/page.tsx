@@ -17,7 +17,6 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ i
         <Link href={`/categories/${recipe.category.id}`} className="text-sm text-slate-600 underline">{recipe.category.name}</Link>
         {recipe.notes && <p className="mt-3 whitespace-pre-wrap text-slate-700">{recipe.notes}</p>}
         <div className="mt-4 flex flex-wrap gap-3 text-sm">
-          <span>Rating: {recipe.rating ?? "—"}</span>
           <span>Last cooked: {recipe.lastCookedAt ? new Date(recipe.lastCookedAt).toLocaleDateString() : "Never"}</span>
         </div>
       </div>

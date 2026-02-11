@@ -47,5 +47,5 @@ APP_PASSWORD=your-single-app-password
 
 - Password-protected app with middleware + login/logout.
 - Categories with add/rename/delete.
-- Dishes with notes, rating, cooked date, and multiple source links.
+- Dishes with notes, cooked date, and multiple source links.
 - Global full-text search across dish title + notes with SQLite FTS5.

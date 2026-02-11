@@ -18,7 +18,6 @@ export default async function EditRecipePage({ params }: { params: Promise<{ id:
           categoryId: recipe.categoryId,
           title: recipe.title,
           notes: recipe.notes,
-          rating: recipe.rating,
           sources: recipe.sources.map((source) => ({ url: source.url, notes: source.notes })),
         }}
         action={updateRecipeAction}

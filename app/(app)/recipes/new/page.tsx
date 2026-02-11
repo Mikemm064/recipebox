@@ -11,7 +11,7 @@ export default async function NewRecipePage({ searchParams }: { searchParams: Pr
       <h1 className="mb-4 text-2xl font-semibold">New Dish</h1>
       <RecipeForm
         categories={categories}
-        defaultValues={{ categoryId: categoryId ?? "", title: "", notes: "", rating: null, sources: [{ url: "", notes: "" }] }}
+        defaultValues={{ categoryId: categoryId ?? "", title: "", notes: "", sources: [{ url: "", notes: "" }] }}
         action={createRecipeAction}
       />
     </div>
