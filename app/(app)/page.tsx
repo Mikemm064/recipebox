@@ -1,20 +1,11 @@
 import Link from "next/link";
-import { count, eq } from "drizzle-orm";
-import { db } from "@/src/db/client";
-import { categories, recipes } from "@/src/db/schema";
-import { getRecentRecipes } from "@/src/lib/data";
+import { getRecentRecipes, getSidebarCategories } from "@/src/lib/data";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function HomePage() {
-  const recent = await getRecentRecipes();
-  const cats = await db
-    .select({ id: categories.id, name: categories.name, total: count(recipes.id) })
-    .from(categories)
-    .leftJoin(recipes, eq(recipes.categoryId, categories.id))
-    .groupBy(categories.id)
-    .orderBy(categories.name);
+  const [recent, cats] = await Promise.all([getRecentRecipes(), getSidebarCategories()]);
 
   return (
     <div className="space-y-8">
@@ -36,7 +27,7 @@ export default async function HomePage() {
           {cats.map((category) => (
             <Link key={category.id} href={`/categories/${category.id}`} className="rounded-md border border-slate-200 bg-white p-4">
               <p className="font-medium">{category.name}</p>
-              <p className="text-sm text-slate-500">{category.total} dishes</p>
+              <p className="text-sm text-slate-500">{category.count} dishes</p>
             </Link>
           ))}
         </div>

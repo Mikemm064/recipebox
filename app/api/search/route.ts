@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
-import { globalSearch } from "@/src/lib/data";
+import { searchRecipes } from "@/src/lib/stubData";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const q = searchParams.get("q") ?? "";
-  const results = await globalSearch(q);
-  return NextResponse.json(results);
+  return NextResponse.json(searchRecipes(q));
 }

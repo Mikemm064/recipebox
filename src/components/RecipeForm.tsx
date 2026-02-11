@@ -14,17 +14,16 @@ type Props = {
     notes?: string | null;
     sources: Source[];
   };
-  action: (formData: FormData) => Promise<void>;
 };
 
-export function RecipeForm({ categories, defaultValues, action }: Props) {
+export function RecipeForm({ categories, defaultValues }: Props) {
   const [sources, setSources] = useState<Source[]>(defaultValues?.sources?.length ? defaultValues.sources : [{ url: "", notes: "" }]);
 
   return (
     <form
-      action={async (formData) => {
-        formData.set("sources", JSON.stringify(sources));
-        await action(formData);
+      onSubmit={(event) => {
+        event.preventDefault();
+        window.alert("DB not connected yet");
       }}
       className="space-y-4"
     >

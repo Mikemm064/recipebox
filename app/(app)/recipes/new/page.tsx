@@ -1,5 +1,4 @@
 import { RecipeForm } from "@/src/components/RecipeForm";
-import { createRecipeAction } from "@/src/lib/actions";
 import { getAllCategories } from "@/src/lib/data";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +14,6 @@ export default async function NewRecipePage({ searchParams }: { searchParams: Pr
       <RecipeForm
         categories={categories}
         defaultValues={{ categoryId: categoryId ?? "", title: "", notes: "", sources: [{ url: "", notes: "" }] }}
-        action={createRecipeAction}
       />
     </div>
   );

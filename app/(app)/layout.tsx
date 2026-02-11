@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { DbDisabledButton } from "@/src/components/DbDisabledButton";
 import { SearchBar } from "@/src/components/SearchBar";
-import { createCategoryAction, logoutAction } from "@/src/lib/actions";
+import { logoutAction } from "@/src/lib/actions";
 import { getSidebarCategories } from "@/src/lib/data";
 
 export const dynamic = "force-dynamic";
@@ -23,10 +24,10 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
           ))}
           {categories.length === 0 && <p className="text-sm text-slate-500">No categories yet.</p>}
         </div>
-        <form action={createCategoryAction} className="mt-4 flex gap-2">
-          <input name="name" placeholder="Add category" className="w-full" required />
-          <button className="bg-slate-900 text-white">Add</button>
-        </form>
+        <div className="mt-4 flex gap-2">
+          <input value="" placeholder="Add category" className="w-full" readOnly aria-label="Add category" />
+          <DbDisabledButton label="Add" className="bg-slate-900 text-white" />
+        </div>
       </aside>
 
       <div>

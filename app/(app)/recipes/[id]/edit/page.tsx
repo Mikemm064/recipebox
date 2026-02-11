@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { RecipeForm } from "@/src/components/RecipeForm";
-import { updateRecipeAction } from "@/src/lib/actions";
 import { getAllCategories, getRecipe } from "@/src/lib/data";
 
 export const dynamic = "force-dynamic";
@@ -23,7 +22,6 @@ export default async function EditRecipePage({ params }: { params: Promise<{ id:
           notes: recipe.notes,
           sources: recipe.sources.map((source) => ({ url: source.url, notes: source.notes })),
         }}
-        action={updateRecipeAction}
       />
     </div>
   );
