@@ -2,6 +2,10 @@
 
 Private personal cooking playbook built with Next.js App Router, Turso/libSQL, Drizzle ORM, Tailwind CSS, and Zod.
 
+## Authentication
+
+This app relies on Vercel Authentication for access control. There is no app-level password login/logout.
+
 ## Required environment variables
 
 Create `.env.local` with:
@@ -9,8 +13,11 @@ Create `.env.local` with:
 ```bash
 TURSO_DATABASE_URL=libsql://...
 TURSO_AUTH_TOKEN=...
-APP_PASSWORD=your-single-app-password
+# Optional fallback if you accidentally named it differently:
+TURSO_DB_AUTH_TOKEN=...
 ```
+
+`TURSO_AUTH_TOKEN` is preferred when both token variables are present.
 
 ## Setup
 
@@ -39,8 +46,8 @@ APP_PASSWORD=your-single-app-password
 2. Import project in Vercel.
 3. Add environment variables in Vercel project settings:
    - `TURSO_DATABASE_URL`
-   - `TURSO_AUTH_TOKEN`
-   - `APP_PASSWORD`
+   - `TURSO_AUTH_TOKEN` (preferred)
+   - `TURSO_DB_AUTH_TOKEN` (optional fallback)
 4. Deploy.
 
 ### Initialize Turso (first time)
@@ -49,14 +56,14 @@ APP_PASSWORD=your-single-app-password
 2. Run:
 
 ```bash
-curl -X POST https://<your-domain>/api/admin/migrate -H "x-admin-key: <APP_PASSWORD>"
+curl -X POST https://<your-domain>/api/admin/migrate
 ```
 
 3. Refresh the app.
 
 ## App features
 
-- Password-protected app with middleware + login/logout.
+- Protected by Vercel Authentication.
 - Categories with add/rename/delete.
 - Dishes with notes, cooked date, and multiple source links.
 - Global full-text search across dish title + notes with SQLite FTS5.

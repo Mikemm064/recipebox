@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { SearchBar } from "@/src/components/SearchBar";
-import { createCategoryAction, logoutAction } from "@/src/lib/actions";
+import { createCategoryAction } from "@/src/lib/actions";
 import { getSidebarCategories, isDatabaseInitialized } from "@/src/lib/data";
 
 export const dynamic = "force-dynamic";
@@ -34,9 +34,6 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
         <header className="sticky top-0 z-10 flex flex-wrap items-center gap-2 border-b border-slate-200 bg-white p-4">
           <SearchBar />
           <Link href="/recipes/new" className="rounded-md bg-slate-900 px-3 py-2 text-white">New Dish</Link>
-          <form action={logoutAction}>
-            <button className="bg-slate-200">Logout</button>
-          </form>
         </header>
         <main className="p-4">{children}</main>
       </div>
