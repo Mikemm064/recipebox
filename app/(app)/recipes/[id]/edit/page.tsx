@@ -3,6 +3,9 @@ import { RecipeForm } from "@/src/components/RecipeForm";
 import { updateRecipeAction } from "@/src/lib/actions";
 import { getAllCategories, getRecipe } from "@/src/lib/data";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function EditRecipePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const [recipe, categories] = await Promise.all([getRecipe(id), getAllCategories()]);

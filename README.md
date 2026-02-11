@@ -43,6 +43,16 @@ APP_PASSWORD=your-single-app-password
    - `APP_PASSWORD`
 4. Deploy.
 
+### Initialize DB on first deploy
+
+After first deployment, run migrations once through the protected admin endpoint:
+
+```bash
+curl -X POST https://<your-vercel-url>/api/admin/migrate -H "x-admin-key: <APP_PASSWORD>"
+```
+
+Run this one time after the initial deploy (or when applying new migrations).
+
 ## App features
 
 - Password-protected app with middleware + login/logout.

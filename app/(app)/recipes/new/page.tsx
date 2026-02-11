@@ -2,6 +2,9 @@ import { RecipeForm } from "@/src/components/RecipeForm";
 import { createRecipeAction } from "@/src/lib/actions";
 import { getAllCategories } from "@/src/lib/data";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function NewRecipePage({ searchParams }: { searchParams: Promise<{ categoryId?: string }> }) {
   const categories = await getAllCategories();
   const { categoryId } = await searchParams;

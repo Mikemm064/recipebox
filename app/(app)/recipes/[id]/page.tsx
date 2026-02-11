@@ -5,6 +5,9 @@ import { CopyLinksButton } from "@/src/components/CopyLinksButton";
 import { cookedTodayAction, deleteRecipeAction } from "@/src/lib/actions";
 import { getRecipe } from "@/src/lib/data";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function RecipeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const recipe = await getRecipe(id);
