@@ -1,15 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ConfirmButton } from "@/src/components/ConfirmButton";
 import { CopyLinksButton } from "@/src/components/CopyLinksButton";
-import { DbDisabledButton } from "@/src/components/DbDisabledButton";
-import { getRecipe } from "@/src/lib/data";
+import { deleteRecipeAction, markCookedTodayAction } from "@/src/lib/actions";
+import { getRecipe, isDatabaseInitialized } from "@/src/lib/data";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function RecipeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const recipe = await getRecipe(id);
+  const [recipe, dbInitialized] = await Promise.all([getRecipe(id), isDatabaseInitialized()]);
   if (!recipe) notFound();
 
   return (
@@ -35,12 +36,18 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ i
         </div>
       </div>
 
-      <p className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">DB not connected yet</p>
+      {!dbInitialized && <p className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">DB not initialized. Showing stub data.</p>}
 
       <div className="flex flex-wrap gap-2">
         <Link href={`/recipes/${recipe.id}/edit`} className="rounded-md bg-slate-900 px-3 py-2 text-white">Edit</Link>
-        <DbDisabledButton label="Cooked today" className="bg-green-100 text-green-700" />
-        <DbDisabledButton label="Delete" className="bg-red-100 text-red-700" />
+        <form action={markCookedTodayAction}>
+          <input type="hidden" name="id" value={recipe.id} />
+          <button className="bg-green-100 px-3 py-2 text-green-700">Cooked today</button>
+        </form>
+        <form action={deleteRecipeAction}>
+          <input type="hidden" name="id" value={recipe.id} />
+          <ConfirmButton confirmMessage="Delete this recipe?" className="bg-red-100 px-3 py-2 text-red-700">Delete</ConfirmButton>
+        </form>
         <CopyLinksButton links={recipe.sources.map((source) => source.url)} />
       </div>
     </div>
