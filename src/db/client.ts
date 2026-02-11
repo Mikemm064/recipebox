@@ -7,14 +7,14 @@ let dbSingleton: LibSQLDatabase<typeof schema> | null = null;
 
 function getConnectionConfig() {
   const url = process.env.TURSO_DATABASE_URL;
-  const authToken = process.env.TURSO_AUTH_TOKEN;
+  const authToken = process.env.TURSO_AUTH_TOKEN ?? process.env.TURSO_DB_AUTH_TOKEN;
 
   if (!url) {
     throw new Error("Missing TURSO_DATABASE_URL");
   }
 
   if (!authToken) {
-    throw new Error("Missing TURSO_AUTH_TOKEN");
+    throw new Error("Missing TURSO_AUTH_TOKEN (or TURSO_DB_AUTH_TOKEN fallback)");
   }
 
   return {

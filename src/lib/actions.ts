@@ -3,7 +3,6 @@
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { clearAuthCookie } from "@/src/lib/auth";
 import { getDb } from "@/src/db/client";
 import { categories, recipes, recipeSources } from "@/src/db/schema";
 import { recipeSchema } from "@/src/lib/validation";
@@ -27,11 +26,6 @@ function normalizeSources(formData: FormData) {
   } catch {
     return [];
   }
-}
-
-export async function logoutAction(): Promise<void> {
-  await clearAuthCookie();
-  redirect("/login");
 }
 
 export async function createCategoryAction(formData: FormData): Promise<void> {
