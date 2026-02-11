@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { RecipeForm } from "@/src/components/RecipeForm";
+import { updateRecipeAction } from "@/src/lib/actions";
 import { getAllCategories, getRecipe } from "@/src/lib/data";
 
 export const dynamic = "force-dynamic";
@@ -14,6 +15,7 @@ export default async function EditRecipePage({ params }: { params: Promise<{ id:
     <div className="mx-auto max-w-2xl rounded-md border border-slate-200 bg-white p-4">
       <h1 className="mb-4 text-2xl font-semibold">Edit Dish</h1>
       <RecipeForm
+        action={updateRecipeAction}
         categories={categories}
         defaultValues={{
           id: recipe.id,

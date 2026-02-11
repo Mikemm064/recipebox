@@ -43,15 +43,16 @@ APP_PASSWORD=your-single-app-password
    - `APP_PASSWORD`
 4. Deploy.
 
-### Initialize DB on first deploy
+### Initialize Turso (first time)
 
-After first deployment, run migrations once through the protected admin endpoint:
+1. Deploy your app to Vercel.
+2. Run:
 
 ```bash
-curl -X POST https://<your-vercel-url>/api/admin/migrate -H "x-admin-key: <APP_PASSWORD>"
+curl -X POST https://<your-domain>/api/admin/migrate -H "x-admin-key: <APP_PASSWORD>"
 ```
 
-Run this one time after the initial deploy (or when applying new migrations).
+3. Refresh the app.
 
 ## App features
 

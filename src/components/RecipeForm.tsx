@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 type Category = { id: string; name: string };
 type Source = { url: string; notes?: string | null };
 
 type Props = {
   categories: Category[];
+  action: (formData: FormData) => void | Promise<void>;
   defaultValues?: {
     id?: string;
     categoryId: string;
@@ -16,18 +17,14 @@ type Props = {
   };
 };
 
-export function RecipeForm({ categories, defaultValues }: Props) {
+export function RecipeForm({ categories, action, defaultValues }: Props) {
   const [sources, setSources] = useState<Source[]>(defaultValues?.sources?.length ? defaultValues.sources : [{ url: "", notes: "" }]);
+  const serializedSources = useMemo(() => JSON.stringify(sources), [sources]);
 
   return (
-    <form
-      onSubmit={(event) => {
-        event.preventDefault();
-        window.alert("DB not connected yet");
-      }}
-      className="space-y-4"
-    >
+    <form action={action} className="space-y-4">
       {defaultValues?.id && <input type="hidden" name="id" value={defaultValues.id} />}
+      <input type="hidden" name="sourcesJson" value={serializedSources} />
       <div>
         <label className="mb-1 block text-sm font-medium">Category</label>
         <select name="categoryId" defaultValue={defaultValues?.categoryId ?? ""} className="w-full" required>
